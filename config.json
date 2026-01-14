@@ -1,0 +1,27 @@
+{
+  "device": "COM3",
+  "baudrate": 57600,
+  "protocol": 2.0,
+  "ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "ticks_per_rev": 4096,
+  "addresses": {
+    "operating_mode": 11,
+    "torque_enable": 64,
+    "goal_position": 116,
+    "present_position": 132,
+    "present_current": 126
+  },
+  "modes": {
+    "extended_position": 4
+  }
+}

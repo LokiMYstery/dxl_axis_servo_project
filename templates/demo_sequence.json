@@ -1,0 +1,39 @@
+{
+  "name": "demo_sequence",
+  "steps": [
+    {
+      "op": "soft_reset",
+      "mode": "to_present"
+    },
+    {
+      "op": "nudge_rel_deg",
+      "targets": {
+        "all": 120
+      }
+    },
+    {
+      "op": "execute",
+      "duration_s": 0.8,
+      "poll_hz": 50,
+      "eps_deg": 2.0,
+      "settle_n": 3
+    },
+    {
+      "op": "wait",
+      "seconds": 0.2
+    },
+    {
+      "op": "nudge_rel_deg",
+      "targets": {
+        "all": -120
+      }
+    },
+    {
+      "op": "execute",
+      "duration_s": 0.8,
+      "poll_hz": 50,
+      "eps_deg": 2.0,
+      "settle_n": 3
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "demo_abs",
+  "steps": [
+    {
+      "op": "soft_reset",
+      "mode": "to_present"
+    },
+    {
+      "op": "set_abs_deg",
+      "targets": {
+        "1": 0,
+        "2": 360,
+        "3": 720,
+        "4": -360,
+        "5": 180,
+        "6": -540,
+        "7": 90,
+        "8": 1080,
+        "9": -720
+      }
+    },
+    {
+      "op": "execute",
+      "duration_s": 1.2,
+      "poll_hz": 40,
+      "eps_deg": 2.0,
+      "settle_n": 3
+    }
+  ]
+}
