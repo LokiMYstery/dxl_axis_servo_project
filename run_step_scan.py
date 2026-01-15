@@ -29,11 +29,49 @@ def save_state(state):
     with open(STATE_FILE, 'w') as f:
         json.dump(state, f, indent=2)
 
+def get_minimal_scan_points(positions):
+    """
+    根据 C3 对称性，筛选出最少的代表性采样点。
+    输入: positions list, e.g., [0, 260, 520, 780]
+    返回: 经过筛选和排序的组合列表
+    """
+    seen_orbits = set()
+    minimal_points = []
+
+    # 生成全排列
+    raw_combinations = list(itertools.product(positions, repeat=3))
+
+    for combo in raw_combinations:
+        a, b, c = combo
+        
+        # 生成该点的旋转轨道 (0度, 120度, 240度)
+        # 注意线缆轮换顺序：(a,b,c) -> (c,a,b) -> (b,c,a)
+        orbit = [
+            (a, b, c),
+            (c, a, b),
+            (b, c, a)
+        ]
+        
+        # 找到这个轨道的“身份证号” (Canonical Representation)
+        # 我们统一取字典序最小的那个作为代表
+        canonical = min(orbit)
+        
+        # 如果这个轨道还没被收录，就收录它
+        if canonical not in seen_orbits:
+            seen_orbits.add(canonical)
+            minimal_points.append(canonical)
+
+    # 简单排序，减少电机来回乱跑的幅度
+    minimal_points.sort()
+    return minimal_points
+
 def main():
     # 1. 生成所有目标组合 (64种组合)
-    combinations = list(itertools.product(POSITIONS, repeat=len(TARGET_IDS)))
-    total_steps = len(combinations)
+    #combinations = list(itertools.product(POSITIONS, repeat=len(TARGET_IDS)))
     
+    total_steps = len(combinations)
+    print(f"正在计算最小对称采样集 (C3 Symmetry)...")
+    combinations = get_minimal_scan_points(POSITIONS)
     # 2. 读取当前状态
     state = load_state()
     
