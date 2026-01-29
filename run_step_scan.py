@@ -10,8 +10,9 @@ from servo_controller import load_config, AxisServo
 STATE_FILE = "scan_progress.json" # 用于存储进度和零点文件
 TARGET_IDS = [7, 8, 9]            # 确保只操作这三个电机
 POINTS_PER_AXIS = 4               # 每个轴遍历4个点
-MAX_DEG = 780                     # 最大角度
+MAX_DEG = 600                     # 最大角度
 
+#当前线缆长度4.07in 最短1.18in
 # 生成 4 个采样点: [0, 260, 520, 780]
 POSITIONS = np.linspace(0, MAX_DEG, POINTS_PER_AXIS).astype(int).tolist()
 # ===========================================
@@ -69,9 +70,10 @@ def main():
     # 1. 生成所有目标组合 (64种组合)
     #combinations = list(itertools.product(POSITIONS, repeat=len(TARGET_IDS)))
     
-    total_steps = len(combinations)
+    
     print(f"正在计算最小对称采样集 (C3 Symmetry)...")
     combinations = get_minimal_scan_points(POSITIONS)
+    total_steps = len(combinations)
     # 2. 读取当前状态
     state = load_state()
     

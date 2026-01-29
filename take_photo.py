@@ -5,7 +5,7 @@ import time
 
 # ================= 配置区域 =================
 # 你的摄像头 ID 列表 (根据你的实际情况修改)
-CAM_IDS = [0, 1, 2] 
+CAM_IDS = [0, 1, 2, 3] 
 
 # 图片保存路径
 SAVE_DIR = "dataset_captured"
