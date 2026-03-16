@@ -184,16 +184,25 @@ class AxisServo:
     def bulk_read(self, want_current: bool = True) -> Tuple[Dict[int, int], Dict[int, Optional[int]]]:
         br = GroupBulkRead(self.port, self.packet)
 
-        for dxl_id in self.cfg.ids:
-            br.addParam(dxl_id, self.cfg.addr_present_position, self.LEN_4)
+        # GroupBulkRead accepts one contiguous block per ID. When current is requested,
+        # read a single block that covers both current and position registers.
+        if want_current and self._supports_current is False:
+            want_current = False
 
-        # Current is optional; if we haven't determined support yet, try once
         if want_current:
-            if self._supports_current is False:
-                want_current = False
-            else:
-                for dxl_id in self.cfg.ids:
-                    br.addParam(dxl_id, self.cfg.addr_present_current, self.LEN_2)
+            start_addr = min(self.cfg.addr_present_current, self.cfg.addr_present_position)
+            end_addr = max(
+                self.cfg.addr_present_current + self.LEN_2,
+                self.cfg.addr_present_position + self.LEN_4,
+            )
+            block_len = end_addr - start_addr
+        else:
+            start_addr = self.cfg.addr_present_position
+            block_len = self.LEN_4
+
+        for dxl_id in self.cfg.ids:
+            if not br.addParam(dxl_id, start_addr, block_len):
+                raise RuntimeError(f"BulkRead addParam failed for ID {dxl_id}")
 
         comm = br.txRxPacket()
         if comm != COMM_SUCCESS:
